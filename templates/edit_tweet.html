@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Tweet | My Twitter{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 form-container">
+            <h3 class="text-center">Edit Tweet</h3>
+            <form id="tweetForm" action="/update_tweet/{{ document_id }}" method="post" enctype="multipart/form-data">
+                <div class="form-group" id="contentGroup">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" name="content">{{ tweet.content }}</textarea>
+                </div>
+                <div class="form-group" id="uploadGroup" style="{% if tweet.type == 'text' %}display: none;{% endif %}">
+                    <label for="upload">Upload Image</label>
+                    <input type="file" class="form-control-file" id="upload" name="content_image">
+                    {% if tweet.image %}
+                    <img src="/{{ tweet.image | replace('\\', '/') }}" class="img-thumbnail mt-2">
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="content_type">Content Type</label>
+                    <select class="form-control" id="content_type" name="content_type">
+                        <option value="text" {% if tweet.type == 'text' %}selected{% endif %}>Text</option>
+                        <option value="image" {% if tweet.type == 'image' %}selected{% endif %}>Image</option>
+                    </select>
+                </div>
+                <input type="submit" value="Update tweet" class="btn btn-success">
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+<script>
+    document.getElementById('content_type').addEventListener('change', function() {
+        var contentGroup = document.getElementById('contentGroup');
+        var uploadGroup = document.getElementById('uploadGroup');
+
+        if (this.value === 'text') {
+            contentGroup.style.display = 'block';
+            uploadGroup.style.display = 'none';
+        } else if (this.value === 'image') {
+            contentGroup.style.display = 'none';
+            uploadGroup.style.display = 'block';
+        }
+    });
+</script>
+{% endblock %}
