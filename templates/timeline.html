@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}User Timeline | My Twitter{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    {% if timeline_tweets %}
+        <div class="row">
+            {% for tweet in timeline_tweets %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if tweet.image %}
+                                <img src="/{{ tweet.image | replace('\\', '/') }}" class="card-img-top" alt="Tweet Image" style="max-width: 100%; height: auto;">
+                            {% endif %}
+                            {% if tweet.content %}
+                                <p class="card-text">{{ tweet.content }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer text-muted">
+                            Posted on {{ tweet.date.strftime('%Y-%m-%d %H:%M:%S') }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No tweets to show.</p>
+    {% endif %}
+</div>
+{% endblock %}
