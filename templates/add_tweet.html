@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}Add Tweet | My Twitter{% endblock %}
+{% block content %} 
+<div class="container">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 form-container">
+            <h3 class="text-center">Add Tweet</h3>
+            <form id="tweetForm" action="/add_tweet" method="post" enctype="multipart/form-data">
+                <div class="form-group" id="contentGroup">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" name="content"></textarea>
+                </div>
+                <div class="form-group" id="uploadGroup" style="display: none;">
+                    <label for="upload">Upload Image</label>
+                    <input type="file" class="form-control-file" id="upload" name="content_image">
+                </div>
+                <div class="form-group">
+                    <label for="content_type">Content Type</label>
+                    <select class="form-control" id="content_type" name="content_type">
+                        <option>Select</option>
+                        <option value="text">Text</option>
+                        <option value="image">Image</option>
+                    </select>
+                </div>
+                <input type="submit" value="Add tweet" class="btn btn-success">
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('content_type').addEventListener('change', function() {
+        var contentGroup = document.getElementById('contentGroup');
+        var uploadGroup = document.getElementById('uploadGroup');
+
+        if (this.value === 'text') {
+            contentGroup.style.display = 'block';
+            uploadGroup.style.display = 'none';
+        } else if (this.value === 'image') {
+            contentGroup.style.display = 'none';
+            uploadGroup.style.display = 'block';
+        }
+    });
+</script>
+{% endblock %}
