@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block title %}User Profile | My Twitter{% endblock %}
+
+{% block content %}
+<script>
+    // Declare a global variable to store is_following value
+    var isFollowing = {{ is_following|tojson }};
+    console.log(isFollowing);
+</script>
+
+<div class="container mt-5">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    <div class="card mb-4" style="margin-top: 6%;">
+        <div class="card-body">
+            <button id="followButton" class="btn float-end {% if is_following %}btn-danger{% else %}btn-success{% endif %}" onclick="toggleFollow()">
+                {% if is_following %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+            </button>
+            <h2 class="card-title">User Profile: {{ user_data.username }}</h2>
+            <p class="card-text"><strong>User ID:</strong> {{ user_data.user_id }}</p>
+        </div>
+    </div>
+    <h3 class="mb-3">Latest Tweets</h3>
+    {% if tweets %}
+        {% for tweet in tweets %}
+            <div class="card" style="width: auto; border: 1px solid #ccc;">
+                <div class="card-body" style="padding: 0;">
+                    {% if tweet.content %}
+                        <p class="card-text" style="padding: 10px;">{{ tweet.content }}</p>
+                    {% endif %}
+                    {% if tweet.image %}
+                        <img src="/{{ tweet.image | replace('\\', '/') }}" class="card-img-top" alt="Tweet Image" style="width: auto; height: auto; max-width: 100%; display: block;">
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No tweets to show.</p>
+    {% endif %}
+</div>
+
+<script>
+    function getQueryParams() {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        return Object.fromEntries(urlSearchParams.entries());
+    }
+    
+    function toggleFollow() {
+        const button = document.getElementById('followButton');
+        const currentAction = button.textContent.trim(); // Get the current action from the button text
+        window.location.href = `/follow/{{ user_data.username }}?action=${currentAction}`;
+        console.log(currentAction);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = getQueryParams();
+        const followButton = document.getElementById('followButton');
+    
+        // Display alert if message present
+        if (params.message) {
+            const message = decodeURIComponent(params.message.replace(/\+/g, ' '));
+            alert(message);
+            window.location.href = "/search_username"
+        }
+    });
+</script>
+
+{% endblock %}
