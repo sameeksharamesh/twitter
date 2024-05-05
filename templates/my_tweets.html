@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}User Timeline | My Twitter{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    {% if tweets %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Content</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tweet in tweets %}
+                    <tr>
+                        <td>
+                            {% if tweet.image %}
+                                <img src="/{{ tweet.image | replace('\\', '/') }}" class="img-fluid" alt="Image tweet" style="width: 100px; height: auto;">
+                            {% else %}
+                                No Image
+                            {% endif %}
+                        </td>
+                        <td>{{ tweet.content | default('No content', true) }}</td>
+                        <td>{{ tweet.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>
+                            <a href="/edit/{{ tweet.id }}" class="btn btn-warning">Edit</a>
+                            <a href="/delete/{{ tweet.id }}" class="btn btn-danger" >Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No tweets to show.</div>
+    {% endif %}
+</div>
+{% endblock %}
