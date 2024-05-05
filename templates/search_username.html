@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Search Username | My Twitter{% endblock %}
+{% block content %} 
+<div class="container">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 form-container">
+            <h3 class="text-center">Search Username</h3>
+            <div class="form-group" id="contentGroup">
+                <label for="search">Search</label>
+                <input type="text" class="form-control" id="search" name="search">
+            </div>
+            <button type="button" onclick="searchUsername()" class="btn btn-success">Search</button>
+            <div id="searchResults"></div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script>
+    async function searchUsername() {
+        const searchInput = document.getElementById('search').value;
+        const searchResultsDiv = document.getElementById('searchResults');
+        
+        try {
+            const formData = new FormData();
+            formData.append('username', searchInput);  
+
+            const response = await fetch('/search_username', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                let tableHtml = `<table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>User ID</th>
+                                            <th>Username</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
+
+                data.forEach(user => {  
+                    tableHtml += `<tr>
+                                    <td>${user.user_id}</td>
+                                    <td><a href="user_profile/${user.username}">${user.username}</a></td>
+                                  </tr>`;
+                });
+
+                tableHtml += `</tbody></table>`;
+                searchResultsDiv.innerHTML = tableHtml;
+            } else {
+                searchResultsDiv.innerHTML = `<p>${data.message}</p>`;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            searchResultsDiv.innerHTML = `<p>An error occurred while processing your request.</p>`;
+        }
+    }
+</script>
+
+{% endblock %}
