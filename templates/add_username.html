@@ -1,0 +1,21 @@
+{%extends "layout.html" %}
+{% block title %}Add Username | My Twitter{% endblock %}
+{% block content %} 
+<div class="container">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 form-container">
+            <h3 class="text-center">Add Username</h3>
+            <form action="/add_username" method="post">
+                <div class="form-group">
+                    <label for="name">Username</label>
+                    <input class="form-control" type="text" id="name" name="username">
+                </div>
+                <input type="submit" value="Add Username" class="btn btn-success">
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+{% endblock %}
