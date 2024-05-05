@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Search Tweet | My Twitter{% endblock %}
+{% block content %} 
+<div class="container">
+    <a href="/" class="btn btn-dark btn-home float-end">Home</a>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 form-container">
+            <h3 class="text-center">Search Tweet</h3>
+            <div class="form-group" id="contentGroup">
+                <label for="search">Search</label>
+                <input type="text" class="form-control" id="search" name="search">
+            </div>
+            <button type="button" onclick="searchTweet()" class="btn btn-success">Search</button>
+            <div id="searchResults"></div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script>
+    async function searchTweet() {
+        const searchInput = document.getElementById('search').value;
+        const searchResultsDiv = document.getElementById('searchResults');
+        
+        try {
+            const formData = new FormData();
+            formData.append('search_input', searchInput);  // Ensure this matches the field expected by your Python backend
+
+            const response = await fetch('/search_tweet', {  // Ensure this endpoint matches your API
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Display search results in a table
+                let tableHtml = `<table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Tweet ID</th>
+                                            <th>Content</th>  <!-- Updated to match your API response -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
+                // Iterate through the array of tweets and render each tweet
+                data.forEach(tweet => {
+                    tableHtml += `<tr>
+                                    <td>${tweet.tweet_id}</td>
+                                    <td>${tweet.content}</td>  <!-- Updated to use 'content' instead of 'text' -->
+                                </tr>`;
+                });
+                tableHtml += `</tbody></table>`;
+                searchResultsDiv.innerHTML = tableHtml;
+            } else {
+                // Display error message
+                searchResultsDiv.innerHTML = `<p>${data.message}</p>`;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            searchResultsDiv.innerHTML = `<p>An error occurred while processing your request.</p>`;
+        }
+    }
+</script>
+
+{% endblock %}
